@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+        <record id="view_catalogo_import" model="ir.ui.view">
+              <field name="name">Importar Catalogos</field>
+              <field name="model">catalogo.import</field>
+              <field name="type">form</field>
+              <field name="arch" type="xml">
+                <form string="Importar Pedidos" version="7.0">
+                    <group string="Importar Pedidos">
+                        <!-- field name="filename_po"/ -->
+                        <field name="filename_catalogo"/>
+                        <field name="first_row_column"/>
+                    </group>
+                    <footer>
+                        <button name="catalogo_import" string="Importar"  type="object" class="oe_highlight"/>
+			or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+		</form>
+	      </field>
+	</record>
+
+    <record id="action_catalogo_import" model="ir.actions.act_window">
+        <field name="name">Catalogo Import</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="src_model">product.product</field>
+        <field name="res_model">catalogo.import</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record model="ir.values" id="action_value_import_catalogo">
+        <field name="name">Importar Catalogos</field>
+        <field name="key2">client_action_multi</field>
+        <field name="value" eval="'ir.actions.act_window,' +str(ref('action_catalogo_import'))" />
+        <field name="key">action</field>
+        <field name="model">product.product</field>
+    </record>
+
+
+</data>
+</openerp>
