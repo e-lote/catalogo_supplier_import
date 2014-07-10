@@ -40,6 +40,11 @@
         <field name="model">product.product</field>
     </record>
 
+    <menuitem
+                name="Cat Import"
+                id="menu_catimport"
+                parent="purchase.menu_procurement_management_product"
+                action="action_catalogo_import" />
 
 </data>
 </openerp>
