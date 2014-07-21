@@ -103,8 +103,10 @@ class catalogo_import(osv.osv_memory):
 					vals_prod_sup = {
 						'name': supplier_id,
 						'product_tmpl_id': tmpl_id,
+						'min_qty': 1
 						}
 					prod_sup_id = self.pool.get('product.supplierinfo').create(cr,uid,vals_prod_sup)
+		index += 1
 
         vals_lote = {
                'product_ids': [(6, 0, list_products)],
