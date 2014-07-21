@@ -26,7 +26,7 @@
     'author': 'Moldeo Interactive',
     'website': 'http://business.moldeo.coop/',
     'images': [],
-    'depends': ['base','product','purchase'],
+    'depends': ['base','product','purchase','elote_lote'],
     'demo': [],
     'data': ['catalogo_view.xml'],
     # 'data': [],

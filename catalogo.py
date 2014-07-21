@@ -34,6 +34,7 @@ class catalogo_import(osv.osv_memory):
         # 'filename_po': fields.char('Filename', required=True),
 	'filename_catalogo': fields.binary(string='Catalogo Filename'),
         'first_row_column': fields.boolean('1st Row Column Names'),
+	'lote_id': fields.many2one('elote.lote',string='Lote')
     }
 
     _defaults = {
@@ -46,6 +47,12 @@ class catalogo_import(osv.osv_memory):
 	filename_catalogo = res[0]['filename_catalogo']
 	res_first_row = self.read(cr,uid,ids,['first_row_column'])
 	first_row = res_first_row[0]['first_row_column']
+	res_lote_id = self.read(cr,uid,ids,['lote_id'])
+	lote_id = res_lote_id[0]['lote_id'][0]
+
+	if not lote_id:
+		raise osv.except_osv(_('Error!'), _("Debe seleccionar un lote!!!"))
+		return {'type': 'ir.actions.act_window_close'}
 
 	if not filename_catalogo:
 		raise osv.except_osv(_('Error!'), _("Debe ingresar un archivo a importar!!!"))
@@ -53,6 +60,12 @@ class catalogo_import(osv.osv_memory):
 
 	file=base64.decodestring(filename_catalogo)
 	lines=file.split('\n')
+
+	lote_obj = self.pool.get('elote.lote').browse(cr,uid,lote_id)
+	if lote_obj.state != 'draft':
+		raise osv.except_osv(_('Error!'), _("El lote seleccionado debe estar en estado borrador!!!"))
+		return {'type': 'ir.actions.act_window_close'}
+		
 
 	#try:
         #	file = open(filename_po,'r')   # Trying to create a new file or open one
@@ -62,7 +75,8 @@ class catalogo_import(osv.osv_memory):
 
 	#lines = file.readlines()
 	index = 1
-	dict_orders = {}	
+	dict_orders = {}
+	list_products = []	
 	for line in lines:
 		if ((index > 1 and first_row) or (index > 0 and not first_row)):
 			cadena = line.split(',')
@@ -84,12 +98,20 @@ class catalogo_import(osv.osv_memory):
 				product_supplier_id = self.pool.get('product.supplierinfo').search(cr,uid,[('name','=',supplier_id),\
 					('product_tmpl_id','=',tmpl_id)])
 				product_id = product_id[0]
+				list_products.append(product_id)
 				if not product_supplier_id:
 					vals_prod_sup = {
 						'name': supplier_id,
 						'product_tmpl_id': tmpl_id,
 						}
-					prod_sup_id = self.pool.get('product.supplierinfo').create(cr,uid,vals_prod_sup)		
+					prod_sup_id = self.pool.get('product.supplierinfo').create(cr,uid,vals_prod_sup)
+
+        vals_lote = {
+               'product_ids': [(6, 0, list_products)],
+                }
+        return_id = self.pool.get('elote.lote').write(cr,uid,lote_id,vals_lote)
+
+		
         return {}
 
 catalogo_import()

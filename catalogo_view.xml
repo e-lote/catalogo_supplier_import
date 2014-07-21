@@ -12,6 +12,7 @@
                         <!-- field name="filename_po"/ -->
                         <field name="filename_catalogo"/>
                         <field name="first_row_column"/>
+                        <field name="lote_id"/>
                     </group>
                     <footer>
                         <button name="catalogo_import" string="Importar"  type="object" class="oe_highlight"/>
