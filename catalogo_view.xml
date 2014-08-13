@@ -45,7 +45,13 @@
                 name="Cat Import"
                 id="menu_catimport"
                 parent="purchase.menu_procurement_management_product"
-                action="action_catalogo_import" />
+                action="action_catalogo_import"
+		groups="purchase.group_purchase_manager"
+		 />
+
+    <delete model="ir.ui.menu" search="[('name','=','Incoming Products')]" />
+    <delete model="ir.ui.menu" search="[('name','=','Incoming Products')]" />
+
 
 </data>
 </openerp>

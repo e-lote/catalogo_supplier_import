@@ -86,7 +86,7 @@ class catalogo_import(osv.osv_memory):
 		
 				supplier_id = self.pool.get('res.partner').search(cr,uid,[('name','=',supplier_name)])	
 				if not supplier_id:
-					raise osv.except_osv(_('Error!'), _("Linea "+str(index)+" .No se encuentra el proveedor "+supplier_isbn))
+					raise osv.except_osv(_('Error!'), _("Linea "+str(index)+" .No se encuentra el proveedor "+supplier_name))
 					return {'type': 'ir.actions.act_window_close'}
 				supplier_id = supplier_id[0]
 				product_id = self.pool.get('product.product').search(cr,uid,[('ean13','=',isbn)])	
