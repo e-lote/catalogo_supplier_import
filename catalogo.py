@@ -97,6 +97,10 @@ class catalogo_import(osv.osv_memory):
 				tmpl_id = product_obj[0].product_tmpl_id.id
 				product_supplier_id = self.pool.get('product.supplierinfo').search(cr,uid,[('name','=',supplier_id),\
 					('product_tmpl_id','=',tmpl_id)])
+				if not product_supplier_id:
+					raise osv.except_osv(_('Error!'), _("Linea "+str(index)+" .No se encuentra el producto/supplier "+isbn))
+					return {'type': 'ir.actions.act_window_close'}
+
 				product_id = product_id[0]
 				list_products.append(product_id)
 				if not product_supplier_id:
