@@ -111,7 +111,10 @@ class catalogo_import(osv.osv_memory):
 						}
 					prod_sup_id = self.pool.get('product.supplierinfo').create(cr,uid,vals_prod_sup)
 		index += 1
-
+	if not list_products:
+		raise osv.except_osv(_('Error!'), _("Linea "+str(index)+" .No se encuentra el producto/supplier "+isbn))
+		return {'type': 'ir.actions.act_window_close'}
+		
         vals_lote = {
                'product_ids': [(6, 0, list_products)],
                 }
