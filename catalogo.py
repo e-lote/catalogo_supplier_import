@@ -80,9 +80,10 @@ class catalogo_import(osv.osv_memory):
 	for line in lines:
 		if ((index > 1 and first_row) or (index > 0 and not first_row)):
 			cadena = line.split(',')
-			if len(cadena)==2:
+			if len(cadena)==3:
 				supplier_name = cadena[0]
 				isbn = cadena[1].replace('\n','')
+				supplier_price = float(cadena[2])
 		
 				supplier_id = self.pool.get('res.partner').search(cr,uid,[('name','=',supplier_name)])	
 				if not supplier_id:
@@ -97,19 +98,26 @@ class catalogo_import(osv.osv_memory):
 				tmpl_id = product_obj[0].product_tmpl_id.id
 				product_supplier_id = self.pool.get('product.supplierinfo').search(cr,uid,[('name','=',supplier_id),\
 					('product_tmpl_id','=',tmpl_id)])
-				if not product_supplier_id:
-					raise osv.except_osv(_('Error!'), _("Linea "+str(index)+" .No se encuentra el producto/supplier "+isbn))
-					return {'type': 'ir.actions.act_window_close'}
+				# if not product_supplier_id:
+				#	raise osv.except_osv(_('Error!'), _("Linea "+str(index)+" .No se encuentra el producto/supplier "+isbn))
+				#	return {'type': 'ir.actions.act_window_close'}
 
 				product_id = product_id[0]
 				list_products.append(product_id)
+				vals_prod_sup = {
+					'name': supplier_id,
+					'product_tmpl_id': tmpl_id,
+					'min_qty': 1,
+					}
 				if not product_supplier_id:
-					vals_prod_sup = {
-						'name': supplier_id,
-						'product_tmpl_id': tmpl_id,
-						'min_qty': 1
-						}
+					vals_prod_sup['supplier_price'] = supplier_price
 					prod_sup_id = self.pool.get('product.supplierinfo').create(cr,uid,vals_prod_sup)
+				else:
+					vals_prod_sup['valid_to'] = str(date.today())
+					return_id = self.pool.get('product.supplierinfo').write(cr,uid,product_supplier_id,vals_prod_sup)
+					del vals_prod_sup['valid_to']
+					vals_prod_sup['supplier_price'] = supplier_price
+					return_id = self.pool.get('product.supplierinfo').create(cr,uid,vals_prod_sup)
 		index += 1
 	if not list_products:
 		raise osv.except_osv(_('Error!'), _("Linea "+str(index)+"Vacia lista list_products ."))
