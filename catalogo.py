@@ -117,6 +117,7 @@ class catalogo_import(osv.osv_memory):
 					return_id = self.pool.get('product.supplierinfo').write(cr,uid,product_supplier_id,vals_prod_sup)
 					del vals_prod_sup['valid_to']
 					vals_prod_sup['supplier_price'] = supplier_price
+					vals_prod_sup['valid_from'] = str(date.today())
 					return_id = self.pool.get('product.supplierinfo').create(cr,uid,vals_prod_sup)
 		index += 1
 	if not list_products:
